@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cryptid X Decoder</title>
+  <title>Cryptid X Decoder v2.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Animated grid background -->
+  <!-- Animated backgrounds -->
   <div class="grid-bg" aria-hidden="true"></div>
   <div class="scanline" aria-hidden="true"></div>
+  <div class="particle-bg" aria-hidden="true"></div>
 
   <div class="wrapper">
     <!-- Header -->
@@ -19,132 +20,285 @@
       <div class="logo-wrap">
         <svg class="logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M24 4L40 13V35L24 44L8 35V13L24 4Z" stroke="var(--cyan)" stroke-width="1.5" fill="none"/>
-          <path d="M24 4L40 13V35L24 44L8 35V13L24 4Z" stroke="var(--cyan)" stroke-width="0.5" fill="var(--cyan-dim)" opacity="0.3"/>
           <circle cx="24" cy="24" r="6" fill="none" stroke="var(--cyan)" stroke-width="1.5"/>
           <path d="M24 18V24L28 28" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M12 18L20 24M36 18L28 24" stroke="var(--cyan)" stroke-width="0.75" opacity="0.6"/>
         </svg>
         <div>
           <h1 class="logo-title">CRYPTID X</h1>
-          <span class="logo-sub">DECODER</span>
+          <span class="logo-sub">DECODER v2.0</span>
         </div>
       </div>
-      <div class="header-status">
-        <span class="status-dot" id="statusDot"></span>
-        <span class="status-text" id="statusText">READY</span>
+      <div class="header-controls">
+        <div class="header-status">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">READY</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
       </div>
     </header>
 
-    <!-- Main input panel -->
+    <!-- Tab Navigation -->
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="decrypt">DECRYPT</button>
+      <button class="tab-btn" data-tab="batch">BATCH MODE</button>
+      <button class="tab-btn" data-tab="settings">SETTINGS</button>
+      <button class="tab-btn" data-tab="about">ABOUT</button>
+    </nav>
+
     <main>
-      <section class="panel" id="inputPanel">
-        <div class="panel-header">
-          <span class="panel-tag">01</span>
-          <h2 class="panel-title">INPUT TARGET</h2>
-          <div class="panel-line"></div>
-        </div>
-
-        <div class="input-group">
-          <label class="field-label" for="scriptInput">ENCRYPT X LINK OR SCRIPT ID</label>
-          <div class="input-row">
-            <input
-              type="text"
-              id="scriptInput"
-              class="main-input"
-              placeholder="https://encrypt-x.pages.dev/Scripts?Id=2723928466610  or  2723928466610"
-              autocomplete="off"
-              spellcheck="false"
-            />
-            <button class="btn-paste" id="pasteBtn" title="Paste from clipboard">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M8 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2"/><path d="M12 11v6M9 14h6"/></svg>
-            </button>
+      <!-- Decrypt Tab -->
+      <section class="tab-content active" id="tab-decrypt">
+        <section class="panel" id="inputPanel">
+          <div class="panel-header">
+            <span class="panel-tag">01</span>
+            <h2 class="panel-title">INPUT TARGET</h2>
+            <div class="panel-line"></div>
           </div>
-          <p class="field-hint">Accepts full URL or numeric/alphanumeric Script ID</p>
-        </div>
 
-        <div class="btn-row">
-          <button class="btn-primary" id="decryptBtn">
-            <span class="btn-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            </span>
-            <span class="btn-label">DECRYPT SCRIPT</span>
-            <span class="btn-glow"></span>
-          </button>
-          <button class="btn-secondary" id="clearBtn">CLEAR</button>
-        </div>
-
-        <!-- Loader -->
-        <div class="loader-wrap" id="loaderWrap" hidden>
-          <div class="loader-bar-track">
-            <div class="loader-bar" id="loaderBar"></div>
-          </div>
-          <div class="loader-steps" id="loaderSteps">
-            <span class="step" id="step1">▸ Extracting ID</span>
-            <span class="step" id="step2">▸ Fetching from GitHub</span>
-            <span class="step" id="step3">▸ Decrypting payload</span>
-            <span class="step" id="step4">▸ Rendering output</span>
-          </div>
-        </div>
-
-        <!-- Error -->
-        <div class="alert alert-error" id="errorAlert" hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span id="errorMsg">An error occurred.</span>
-        </div>
-      </section>
-
-      <!-- Output panel (hidden until decryption) -->
-      <section class="panel" id="outputPanel" hidden>
-        <div class="panel-header">
-          <span class="panel-tag">02</span>
-          <h2 class="panel-title">DECRYPTED OUTPUT</h2>
-          <div class="panel-line"></div>
-        </div>
-
-        <div class="output-meta" id="outputMeta"></div>
-
-        <div class="code-wrap">
-          <div class="code-toolbar">
-            <span class="code-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-              LUA SCRIPT
-            </span>
-            <div class="code-actions">
-              <button class="btn-tool" id="copyBtn" title="Copy to clipboard">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                <span>COPY</span>
-              </button>
-              <button class="btn-tool" id="downloadBtn" title="Download .lua file">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span>DOWNLOAD .LUA</span>
+          <div class="input-group">
+            <label class="field-label" for="scriptInput">ENCRYPT X LINK OR SCRIPT ID</label>
+            <div class="input-row">
+              <input type="text" id="scriptInput" class="main-input" placeholder="https://encrypt-x.pages.dev/Scripts?Id=XXXX or XXXX" autocomplete="off" spellcheck="false" />
+              <button class="btn-paste" id="pasteBtn" title="Paste from clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z"/></svg>
               </button>
             </div>
+            <p class="field-hint">Accepts full URL or numeric/alphanumeric Script ID</p>
           </div>
-          <pre class="code-block" id="codeBlock"><code id="codeContent"></code></pre>
-        </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" id="decryptBtn">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+              <span class="btn-label">DECRYPT SCRIPT</span>
+              <span class="btn-glow"></span>
+            </button>
+            <button class="btn-secondary" id="clearBtn">CLEAR</button>
+          </div>
+
+          <!-- Loader -->
+          <div class="loader-wrap" id="loaderWrap" hidden>
+            <div class="loader-bar-track"><div class="loader-bar" id="loaderBar"></div></div>
+            <div class="loader-steps" id="loaderSteps">
+              <span class="step" id="step1">▸ Extracting ID</span>
+              <span class="step" id="step2">▸ Fetching from GitHub</span>
+              <span class="step" id="step3">▸ Decrypting payload</span>
+              <span class="step" id="step4">▸ Rendering output</span>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div class="alert alert-error" id="errorAlert" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+            <span id="errorMsg">An error occurred.</span>
+          </div>
+        </section>
+
+        <!-- Output Panel -->
+        <section class="panel" id="outputPanel" hidden>
+          <div class="panel-header">
+            <span class="panel-tag">02</span>
+            <h2 class="panel-title">DECRYPTED OUTPUT</h2>
+            <div class="panel-line"></div>
+          </div>
+
+          <div class="output-meta" id="outputMeta"></div>
+
+          <div class="code-wrap">
+            <div class="code-toolbar">
+              <span class="code-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+                LUA SCRIPT
+              </span>
+              <div class="code-actions">
+                <button class="btn-tool" id="copyBtn" title="Copy to clipboard">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                  <span>COPY</span>
+                </button>
+                <button class="btn-tool" id="downloadBtn" title="Download .lua file">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>DOWNLOAD</span>
+                </button>
+              </div>
+            </div>
+            <pre class="code-block" id="codeBlock"><code id="codeContent"></code></pre>
+          </div>
+        </section>
+
+        <!-- History -->
+        <section class="panel" id="historyPanel">
+          <div class="panel-header">
+            <span class="panel-tag">03</span>
+            <h2 class="panel-title">RECENT DECRYPTIONS</h2>
+            <div class="panel-line"></div>
+            <button class="btn-tiny" id="clearHistoryBtn">CLEAR ALL</button>
+          </div>
+          <div class="history-list" id="historyList">
+            <p class="empty-state">No decryptions yet. Start decrypting!</p>
+          </div>
+        </section>
       </section>
 
-      <!-- Recent history panel -->
-      <section class="panel" id="historyPanel">
-        <div class="panel-header">
-          <span class="panel-tag">03</span>
-          <h2 class="panel-title">RECENT DECRYPTIONS</h2>
-          <div class="panel-line"></div>
-          <button class="btn-tiny" id="clearHistoryBtn">CLEAR ALL</button>
-        </div>
-        <div class="history-list" id="historyList">
-          <p class="empty-state">No decryptions yet. Paste a link above to get started.</p>
-        </div>
+      <!-- Batch Tab -->
+      <section class="tab-content" id="tab-batch">
+        <section class="panel">
+          <div class="panel-header">
+            <span class="panel-tag">B1</span>
+            <h2 class="panel-title">BATCH DECRYPTION</h2>
+            <div class="panel-line"></div>
+          </div>
+
+          <div class="input-group">
+            <label class="field-label" for="batchInput">PASTE SCRIPT IDs (one per line)</label>
+            <textarea id="batchInput" class="batch-input" placeholder="2723928466610&#10;1234567890&#10;https://encrypt-x.pages.dev/Scripts?Id=9876543210" rows="6"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" id="batchDecryptBtn">
+              <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></span>
+              <span class="btn-label">START BATCH</span>
+              <span class="btn-glow"></span>
+            </button>
+            <button class="btn-secondary" id="batchClearBtn">CLEAR</button>
+          </div>
+
+          <!-- Batch Progress -->
+          <div id="batchProgress" hidden style="margin-top: 20px;">
+            <div class="loader-bar-track">
+              <div class="loader-bar" id="batchProgressFill"></div>
+            </div>
+            <p style="text-align: center; color: var(--text-dim); margin-top: 10px;" id="progressStatus">0/0 completed</p>
+          </div>
+
+          <!-- Batch Results -->
+          <section class="panel" id="batchResultsPanel" hidden style="margin-top: 20px;">
+            <div class="panel-header">
+              <span class="panel-tag">B2</span>
+              <h2 class="panel-title">BATCH RESULTS</h2>
+              <div class="panel-line"></div>
+              <button class="btn-tiny" id="exportBatchBtn">EXPORT JSON</button>
+            </div>
+            <div id="batchResults" style="display: flex; flex-direction: column; gap: 10px;"></div>
+          </section>
+        </section>
+      </section>
+
+      <!-- Settings Tab -->
+      <section class="tab-content" id="tab-settings">
+        <section class="panel">
+          <div class="panel-header">
+            <span class="panel-tag">S1</span>
+            <h2 class="panel-title">PREFERENCES</h2>
+            <div class="panel-line"></div>
+          </div>
+
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label class="setting-label">
+                <input type="checkbox" id="autoScroll" />
+                <span>Auto-scroll to results</span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">
+                <input type="checkbox" id="syntaxHighlight" />
+                <span>Syntax highlighting</span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">
+                <input type="checkbox" id="enableNotifications" />
+                <span>Desktop notifications</span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">History limit:</label>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="range" id="historyLimit" min="10" max="50" value="10" style="flex: 1;" />
+                <span id="historyLimitValue" style="min-width: 30px;">10</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label class="setting-label">Theme:</label>
+              <div style="display: flex; gap: 10px;">
+                <label><input type="radio" name="theme" id="themeAuto" value="auto" /> Auto</label>
+                <label><input type="radio" name="theme" id="themeDark" value="dark" /> Dark</label>
+                <label><input type="radio" name="theme" id="themeLight" value="light" /> Light</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-header" style="margin-top: 30px;">
+            <span class="panel-tag">S2</span>
+            <h2 class="panel-title">DATA MANAGEMENT</h2>
+            <div class="panel-line"></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" id="exportDataBtn">EXPORT DATA</button>
+            <button class="btn-secondary" id="importDataBtn">IMPORT DATA</button>
+            <input type="file" id="importFile" accept=".json" hidden />
+            <button class="btn-secondary btn-danger" id="clearAllDataBtn">CLEAR ALL DATA</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- About Tab -->
+      <section class="tab-content" id="tab-about">
+        <section class="panel">
+          <div class="panel-header">
+            <span class="panel-tag">❓</span>
+            <h2 class="panel-title">ABOUT THIS PROJECT</h2>
+            <div class="panel-line"></div>
+          </div>
+
+          <div style="line-height: 1.8; color: var(--text);">
+            <p><strong>Cryptid X Decoder v2.0</strong> — Advanced decryption tool for Encrypt X protected Lua scripts.</p>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px; color: var(--cyan);">Features:</h3>
+            <ul style="margin-left: 20px;">
+              <li>Single & batch decryption</li>
+              <li>100% client-side processing</li>
+              <li>Dark/light theme toggle</li>
+              <li>Advanced settings panel</li>
+              <li>Data export/import</li>
+              <li>Desktop notifications</li>
+              <li>Full history tracking</li>
+              <li>Responsive design</li>
+            </ul>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px; color: var(--cyan);">How It Works:</h3>
+            <ol style="margin-left: 20px;">
+              <li>Extracts Script ID from URL or direct input</li>
+              <li>Fetches encrypted data from GitHub</li>
+              <li>Base32 decodes the script field</li>
+              <li>XOR decrypts with the provided key</li>
+              <li>Displays as readable Lua source code</li>
+            </ol>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px; color: var(--cyan);">Security:</h3>
+            <p>✓ All processing happens in your browser<br/>✓ No data sent to external servers<br/>✓ History stored locally only<br/>✓ 100% open source</p>
+
+            <h3 style="margin-top: 20px; margin-bottom: 10px; color: var(--cyan);">Version:</h3>
+            <p>v2.0 | Built with HTML5, CSS3, Vanilla JavaScript<br/><a href="https://github.com/negrilNode/Cryptid-X-Decoder" style="color: var(--cyan); text-decoration: underline;">GitHub Repository</a></p>
+          </div>
+        </section>
       </section>
     </main>
 
     <footer class="footer">
-      <span>CRYPTID X DECODER</span>
+      <span>CRYPTID X DECODER v2.0</span>
       <span class="footer-sep">//</span>
       <span>CLIENT-SIDE ONLY · NO DATA SENT TO SERVERS</span>
     </footer>
   </div>
 
+  <script src="utils.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
